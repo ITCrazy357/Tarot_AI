@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Hand-Tracked Tarot Picker (3 / 10)</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- MediaPipe Hands -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <canvas id="stars"></canvas>
+
+    <div id="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="sigil"></div>
+          <div class="brand-text">
+            <div class="title">Tarot Selection</div>
+            <div class="subtitle">Pinch to pick • Move to edges to pan</div>
+          </div>
+        </div>
+
+        <div class="status">
+          <div class="pill" id="pickedPill">
+            Picked <b id="pickedCount">0</b>/3
+          </div>
+          <button class="icon-btn" id="mirrorBtn" title="Mirror cursor">
+            <span class="icon">⇋</span>
+          </button>
+          <button class="icon-btn" id="camBtn" title="Toggle camera preview">
+            <span class="icon">📷</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="stage" id="stage">
+        <!-- Deck -->
+        <section class="deck" aria-label="Tarot deck">
+          <div class="deck-glow"></div>
+          <div class="deck-rail" id="deckRail"></div>
+        </section>
+
+        <!-- Selected stack -->
+        <aside class="picked" aria-label="Picked cards">
+          <div class="picked-title">Your picks</div>
+          <div class="picked-stack" id="pickedStack"></div>
+        </aside>
+
+        <!-- Cursor -->
+        <div id="cursor" aria-hidden="true">
+          <div class="cursor-dot"></div>
+          <div class="cursor-ring"></div>
+          <div class="cursor-label" id="cursorLabel">OPEN</div>
+        </div>
+
+        <!-- Reveal overlay -->
+        <div class="reveal" id="reveal">
+          <div class="reveal-dim"></div>
+          <div class="reveal-card-wrap">
+            <div class="tarot-card big" id="revealCard">
+              <div class="card-inner">
+                <div class="card-face card-back">
+                  <div class="back-ornament">
+                    <div class="back-center"></div>
+                  </div>
+                </div>
+                <div class="card-face card-front">
+                  <div class="front-frame">
+                    <div class="front-top">
+                      <div class="front-title" id="revealTitle">THE STAR</div>
+                      <div class="front-sub" id="revealSub">Placeholder</div>
+                    </div>
+                    <div class="front-art" id="revealArt">
+                      <div class="glyph">✶</div>
+                      <div class="art-text">Your content here</div>
+                    </div>
+                    <div class="front-bottom">
+                      <div class="front-index" id="revealIndex">I</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="reveal-hint" id="revealHint">
+              <div class="hint-title">Revealed</div>
+              <div class="hint-sub">Moving to your picks…</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary overlay (after 3 picks) -->
+        <div class="summary" id="summary" aria-hidden="true">
+          <div class="summary-dim"></div>
+
+          <div
+            class="summary-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Your 3 cards"
+          >
+            <div class="summary-head">
+              <div class="summary-title">Your 3 Cards</div>
+              <div class="summary-sub">A quick recap of your reading.</div>
+            </div>
+
+            <div
+              class="summary-cards"
+              id="summaryCards"
+              aria-label="Selected cards"
+            ></div>
+
+            <div class="summary-actions">
+              <button class="ghost" id="summaryCloseBtn">Close</button>
+              <button class="primary" id="summaryAgainBtn">
+                Shuffle Again
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Camera (hidden by default, can be toggled) -->
+        <video id="video" playsinline muted></video>
+        <div class="cam-preview" id="camPreview">
+          <video id="videoPreview" playsinline muted></video>
+        </div>
+
+        <!-- Start overlay -->
+        <div class="start" id="start">
+          <div class="start-card">
+            <div class="start-title">Start Hand Tracking</div>
+            <div class="start-desc">
+              Open your palm to move the cursor. Move your hand to the
+              left/right edges to pan the deck. Pinch <b>index + thumb</b> to
+              pick a card (3 picks total).
+            </div>
+            <div class="start-actions">
+              <button class="primary" id="startBtn">Start</button>
+              <button class="ghost" id="demoBtn">Demo (mouse)</button>
+            </div>
+            <div class="start-foot">
+              Tip: run on <b>https</b> or <b>http://localhost</b> (VSCode Live
+              Server).
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <div class="footer-left">
+          <span class="kbd">Edge pan</span> •
+          <span class="kbd">Hover zoom</span> •
+          <span class="kbd">Pinch select</span>
+        </div>
+        <div class="footer-right" id="footerMsg">Waiting…</div>
+      </footer>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

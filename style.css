@@ -1,0 +1,851 @@
+/* =========================
+   Base + Layout
+========================= */
+:root {
+  --bg0: #05060b;
+  --bg1: #070a14;
+  --ink: #e9e7ff;
+  --muted: rgba(233, 231, 255, 0.72);
+  --glass: rgba(10, 12, 25, 0.38);
+  --glass2: rgba(10, 12, 25, 0.58);
+  --gold1: #caa85f;
+  --gold2: #f7e7b2;
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+
+  --cardW: clamp(92px, 12.5vw, 140px);
+  --cardH: calc(var(--cardW) * 1.55);
+  --gap: calc(var(--cardW) * 2.2);
+  --edgeZone: 0.14; /* percent of viewport width */
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Helvetica, Arial;
+  background: radial-gradient(
+      1200px 800px at 70% 10%,
+      rgba(120, 90, 255, 0.16),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 700px at 20% 20%,
+      rgba(255, 190, 120, 0.1),
+      transparent 55%
+    ),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+  overflow: hidden;
+  touch-action: none;
+}
+
+#stars {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sigil {
+  width: 38px;
+  height: 38px;
+  border-radius: 14px;
+  background: radial-gradient(
+      circle at 35% 30%,
+      rgba(255, 255, 255, 0.35),
+      transparent 55%
+    ),
+    conic-gradient(
+      from 20deg,
+      rgba(202, 168, 95, 0.18),
+      rgba(120, 90, 255, 0.18),
+      rgba(202, 168, 95, 0.18)
+    );
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  position: relative;
+}
+.sigil::after {
+  content: "✶";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.86);
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.3);
+}
+.brand-text .title {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  font-size: 70px;
+}
+.brand-text .subtitle {
+  font-size: 70px;
+  color: var(--muted);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pill {
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  font-size: 12px;
+}
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.2s ease;
+}
+.icon-btn:active {
+  transform: scale(0.96);
+}
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  padding: 8px 0 0;
+  overflow: hidden;
+}
+
+.deck {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 58px;
+  height: clamp(220px, 42vh, 360px);
+  pointer-events: none; /* interaction via cursor (elementFromPoint still works) */
+}
+.deck-glow {
+  position: absolute;
+  inset: -80px -40px auto -40px;
+  height: 340px;
+  background: radial-gradient(
+      closest-side at 50% 60%,
+      rgba(120, 90, 255, 0.22),
+      transparent 62%
+    ),
+    radial-gradient(
+      closest-side at 50% 60%,
+      rgba(202, 168, 95, 0.12),
+      transparent 68%
+    );
+  filter: blur(2px);
+  opacity: 0.9;
+}
+.deck-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  transform-style: preserve-3d;
+  perspective: 900px;
+}
+
+.picked {
+  position: absolute;
+  left: 14px;
+  top: 120px;
+  width: min(140px, 26vw);
+  pointer-events: none;
+}
+.picked-title {
+  font-size: 25px;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0 0 8px 6px;
+}
+.picked-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer {
+  padding: 10px 14px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+}
+.kbd {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* =========================
+   Tarot Card (Tarot-ish)
+========================= */
+.tarot-card {
+  width: var(--cardW);
+  height: var(--cardH);
+  position: absolute;
+  transform-style: preserve-3d;
+  transition: transform 0.22s ease, filter 0.22s ease, opacity 0.22s ease;
+  will-change: transform;
+  pointer-events: auto;
+}
+
+.tarot-card.small {
+  position: relative;
+  width: 92px;
+  height: calc(92px * 1.55);
+  transform: none !important;
+  filter: none !important;
+}
+@media (max-width: 420px) {
+  .tarot-card.small {
+    width: 86px;
+    height: calc(86px * 1.55);
+  }
+}
+
+.tarot-card.big {
+  width: min(260px, 58vw);
+  height: calc(min(260px, 58vw) * 1.55);
+  position: relative;
+  transform: none;
+  pointer-events: none;
+}
+
+.card-inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.tarot-card.is-flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  backface-visibility: hidden;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transform: translateZ(0.5px);
+}
+
+/* Back */
+.card-back {
+  background: radial-gradient(
+      circle at 50% 25%,
+      rgba(255, 255, 255, 0.22),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 50% 55%,
+      rgba(37, 14, 245, 0.781),
+      transparent 55%
+    ),
+    linear-gradient(180deg, rgba(38, 5, 223, 0.027), rgb(37, 87, 179));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.back-ornament {
+  position: absolute;
+  inset: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(202, 168, 95, 0.35);
+  background: radial-gradient(
+      circle at 50% 50%,
+      rgba(202, 168, 95, 0.1),
+      transparent 55%
+    ),
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.06) 0 2px,
+      transparent 2px 10px
+    );
+  overflow: hidden;
+}
+.back-ornament::before,
+.back-ornament::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.back-ornament::after {
+  inset: 22px;
+  border-color: rgba(202, 168, 95, 0.26);
+}
+.back-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 58%;
+  aspect-ratio: 1/1;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: radial-gradient(
+      circle at 30% 30%,
+      rgba(255, 255, 255, 0.14),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 60% 60%,
+      rgba(202, 168, 95, 0.16),
+      transparent 60%
+    );
+  display: grid;
+  place-items: center;
+}
+.back-center::before {
+  content: "✦";
+  font-size: 34px;
+  color: rgba(247, 231, 178, 0.9);
+  text-shadow: 0 0 18px rgba(247, 231, 178, 0.25);
+}
+.back-center::after {
+  content: "";
+  position: absolute;
+  width: 92%;
+  height: 92%;
+  border-radius: 999px;
+  border: 1px dashed rgba(202, 168, 95, 0.45);
+  filter: drop-shadow(0 0 8px rgba(202, 168, 95, 0.12));
+}
+
+/* Front */
+.card-front {
+  transform: rotateY(180deg);
+  background: radial-gradient(
+      circle at 50% 25%,
+      rgba(255, 255, 255, 0.65),
+      transparent 50%
+    ),
+    linear-gradient(180deg, #fbf6ea, #efe6d1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.front-frame {
+  position: absolute;
+  inset: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  overflow: hidden;
+}
+.front-frame::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(202, 168, 95, 0.42);
+}
+.front-top {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: center;
+}
+.front-title {
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 0.14em;
+  color: #1c1b18;
+}
+.front-sub {
+  font-size: 25px;
+  color: rgba(0, 0, 0, 0.65);
+}
+.front-art {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 75px;
+  bottom: 48px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: radial-gradient(
+      circle at 50% 30%,
+      rgba(120, 90, 255, 0.22),
+      transparent 55%
+    ),
+    radial-gradient(circle at 30% 70%, rgba(202, 168, 95, 0.2), transparent 58%),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.52),
+      rgba(255, 255, 255, 0.18)
+    );
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.front-art .glyph {
+  font-size: 30px;
+  color: rgba(0, 0, 0, 0.72);
+  text-shadow: 0 0 26px rgba(120, 90, 255, 0.18);
+}
+.front-art .art-text {
+  position: absolute;
+  bottom: 10px;
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.75);
+}
+.front-bottom {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 12px;
+  display: flex;
+  justify-content: center;
+}
+.front-index {
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.72);
+  letter-spacing: 0.18em;
+}
+
+/* Hover + disabled */
+.tarot-card.hovered {
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.35))
+    drop-shadow(0 0 18px rgba(247, 231, 178, 0.18));
+}
+.tarot-card.chosen {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* =========================
+   Cursor
+========================= */
+#cursor {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26px;
+  height: 26px;
+  transform: translate(-50%, -50%);
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+#cursor.show {
+  opacity: 1;
+}
+.cursor-dot {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 22px rgba(255, 255, 255, 0.35),
+    0 0 40px rgba(120, 90, 255, 0.22);
+  transform: scale(0.38);
+}
+.cursor-ring {
+  position: absolute;
+  inset: -12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 0 24px rgba(120, 90, 255, 0.18);
+  backdrop-filter: blur(6px);
+}
+#cursor.pinching .cursor-dot {
+  transform: scale(0.56);
+}
+#cursor.pinching .cursor-ring {
+  border-color: rgba(247, 231, 178, 0.55);
+  box-shadow: 0 0 24px rgba(247, 231, 178, 0.22);
+}
+
+.cursor-label {
+  position: absolute;
+  left: 50%;
+  top: -20px;
+  transform: translateX(-50%);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+}
+
+/* =========================
+   Summary overlay (3 picked cards)
+========================= */
+.summary {
+  position: absolute;
+  inset: 0;
+  z-index: 55;
+  display: none;
+}
+.summary.show {
+  display: block;
+}
+.summary-dim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    900px 520px at 50% 40%,
+    rgba(0, 0, 0, 0.18),
+    rgba(0, 0, 0, 0.72)
+  );
+  backdrop-filter: blur(4px);
+  animation: fadeIn 220ms ease;
+}
+.summary-panel {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  transform: translate(-50%, -50%);
+  width: min(860px, 94vw);
+  border-radius: 22px;
+  padding: 16px 14px 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.62);
+}
+.summary-head {
+  text-align: center;
+}
+.summary-title {
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.summary-sub {
+  margin-top: 15px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+}
+.summary-cards {
+  margin: 14px auto 14px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: clamp(12px, 3vw, 28px);
+  perspective: 1000px;
+}
+
+/* Make cards flow layout-friendly inside summary */
+.summary .tarot-card {
+  position: relative;
+  left: auto !important;
+  top: auto !important;
+  opacity: 1 !important;
+}
+.summary .tarot-card.summary-card {
+  width: min(210px, 28vw);
+  height: calc(min(210px, 28vw) * 1.55);
+  transform-style: preserve-3d;
+  transform-origin: 50% 92%;
+  transition: transform 0.28s ease, filter 0.28s ease;
+}
+
+/* Gentle “recap fan” */
+.summary-cards .summary-card:nth-child(1) {
+  transform: rotate(-6deg) translateY(10px) translateZ(-40px);
+}
+.summary-cards .summary-card:nth-child(2) {
+  transform: rotate(0deg) translateY(0) translateZ(0);
+}
+.summary-cards .summary-card:nth-child(3) {
+  transform: rotate(6deg) translateY(10px) translateZ(-40px);
+}
+
+.summary-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.summary-actions button.primary {
+  flex: 0 0 auto;
+  min-width: 180px;
+}
+
+@media (max-width: 520px) {
+  .summary-panel {
+    top: 50%;
+    padding: 14px 12px 12px;
+  }
+  .summary .tarot-card.summary-card {
+    width: min(160px, 42vw);
+    height: calc(min(160px, 42vw) * 1.55);
+  }
+  .summary-sub {
+    font-size: 12px;
+  }
+  .summary-actions {
+    flex-direction: column;
+  }
+  .summary-actions button.primary {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* =========================
+   Reveal overlay
+========================= */
+.reveal {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: none;
+  pointer-events: none;
+}
+.reveal.show {
+  display: block;
+}
+.reveal-dim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    800px 500px at 50% 40%,
+    rgba(0, 0, 0, 0.25),
+    rgba(0, 0, 0, 0.62)
+  );
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.25s ease;
+}
+.reveal-card-wrap {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  gap: 14px;
+}
+.reveal .tarot-card.big {
+  animation: popIn 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.reveal.moving .tarot-card.big {
+  animation: toStack 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  transform-origin: center;
+}
+.reveal-hint {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 0 16px rgba(0, 0, 0, 0.55);
+}
+.hint-title {
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  font-size: 12px;
+}
+.hint-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@keyframes popIn {
+  from {
+    transform: translateY(8px) scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* slide to left + shrink */
+@keyframes toStack {
+  from {
+    transform: translateY(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  to {
+    transform: translate(-44vw, 12vh) scale(0.36) rotate(-10deg);
+    opacity: 0;
+  }
+}
+
+/* =========================
+   Start overlay
+========================= */
+.start {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 60;
+  background: radial-gradient(
+    900px 600px at 50% 35%,
+    rgba(120, 90, 255, 0.18),
+    rgba(0, 0, 0, 0.68)
+  );
+  backdrop-filter: blur(6px);
+  padding: 18px;
+}
+.start.hidden {
+  display: none;
+}
+.start-card {
+  width: min(520px, 92vw);
+  border-radius: 20px;
+  padding: 18px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.55);
+}
+.start-title {
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.start-desc {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.35;
+  font-size: 13px;
+}
+.start-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+button.primary {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(
+    135deg,
+    rgba(202, 168, 95, 0.3),
+    rgba(120, 90, 255, 0.25)
+  );
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+button.ghost {
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.86);
+  cursor: pointer;
+}
+button.primary:active,
+button.ghost:active {
+  transform: scale(0.98);
+}
+.start-foot {
+  margin-top: 12px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* =========================
+   Camera preview
+========================= */
+#video {
+  display: none;
+}
+.cam-preview {
+  position: absolute;
+  right: 14px;
+  bottom: 62px;
+  width: min(240px, 38vw);
+  aspect-ratio: 16/10;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+  display: none;
+}
+.cam-preview.show {
+  display: block;
+}
+.cam-preview video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); /* mirrored like cursor */
+  opacity: 0.82;
+}
+
+/* Mobile tweaks */
+@media (max-width: 520px) {
+  .topbar {
+    padding: 12px 12px;
+  }
+  .picked {
+    top: 110px;
+    width: 120px;
+  }
+  .deck {
+    top: 56px;
+  }
+}
