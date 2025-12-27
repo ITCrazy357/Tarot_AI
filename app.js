@@ -47,15 +47,15 @@ const TAROT = [
   {
     id: 0,
     title: "GOOD LUCK",
-    sub: "Hope • Renewal",
-    glyph: "✶",
+    sub: "😀😀😀😀😀",
+    glyph: "Mai trúng tủ là ngon lun",
     index: "XVII",
   },
   {
     id: 1,
     title: "GOOD LUCK",
-    sub: "Dreams • Mystery",
-    glyph: "☾",
+    sub: "🍀🍀🍀🍀🍀",
+    glyph: "Chúc em thi tốt",
     index: "XVIII",
   },
   {
