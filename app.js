@@ -55,7 +55,7 @@ const TAROT = [
     id: 1,
     title: "GOOD LUCK",
     sub: "🍀🍀🍀🍀🍀",
-    glyph: "Chúc em thi tốt",
+    glyph: "Chúc em thi tốt nhe",
     index: "XVIII",
   },
   {
@@ -90,14 +90,14 @@ const TAROT = [
     id: 6,
     title: "GOOD LUCK",
     sub: "🔥🔥🔥🔥🔥",
-    glyph: "Mai trúng tủ",
+    glyph: "Mai làm hết bài là ngon lun",
     index: "I",
   },
   {
     id: 7,
     title: "GOOD LUCK",
     sub: "💫💫💫💫💫",
-    glyph: "Không rớt môn",
+    glyph: "Không rớt môn là ngon lun",
     index: "XI",
   },
   {
